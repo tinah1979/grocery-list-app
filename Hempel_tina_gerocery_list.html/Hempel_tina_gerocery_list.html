@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Grocery List</title>
+  
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .text-decoration-line-through {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="container mt-5">
+    <h1 class="text-center mb-4"> Grocery List </h1>
+
+    <!-- Input Row -->
+    <div class="row mb-3">
+      <div class="col-md-5">
+        <input type="text" class="form-control" v-model="newItem" placeholder="Grocery item">
+      </div>
+      <div class="col-md-3">
+        <input type="number" class="form-control" v-model.number="newQuantity" placeholder="Quantity" min="1">
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-primary w-100" @click="addItem">Add Item</button>
+      </div>
+    </div>
+
+    <!-- Grocery List -->
+    <ul class="list-group">
+      <li v-for="(item, index) in groceryList" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <input type="checkbox" v-model="item.done" class="form-check-input me-2">
+          <span :class="{ 'text-muted': item.done, 'text-decoration-line-through': item.done }">
+            {{ item.name }} (x{{ item.quantity }})
+          </span>
+        </div>
+        <button class="btn btn-danger btn-sm" @click="removeItem(index)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Vue Script -->
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          newItem: '',
+          newQuantity: 1,
+          groceryList: []
+        };
+      },
+      methods: {
+        addItem() {
+          if (this.newItem.trim() && this.newQuantity > 0) {
+            this.groceryList.push({
+              name: this.newItem.trim(),
+              quantity: this.newQuantity,
+              done: false
+            });
+            this.newItem = '';
+            this.newQuantity = 1;
+          }
+        },
+        removeItem(index) {
+          this.groceryList.splice(index, 1);
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
